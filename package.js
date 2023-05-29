@@ -1,16 +1,15 @@
-//Json data auto-populates in DOM
 const createdElements = [];
 
-const populateDOMElements = (rootProperty, childProperty) => {
+const populateDOMElements = (tableName, rootProperty, childProperty) => {
+    console.log("domPopulation", tableName, rootProperty, childProperty)
     createdElements.forEach((createdElement) => {
         createdElement.remove();
     });
     createdElements.length = 0;
-
-    $('[xano-root]').each((index, element) => {
+    $(`[${rootProperty}]`).each((index, element) => {
         const root = $(element).attr(rootProperty);
-        const value = getNestedValue(window.xanoData, root);
-
+        const value = getNestedValue(window[tableName], root);
+        console.log(value)
         if (Array.isArray(value)) {
             const originalElement = $(element);
             if (typeof value[0] === 'object') {
@@ -44,7 +43,6 @@ const populateDOMElements = (rootProperty, childProperty) => {
     });
 };
 
-// Function to get nested values from JSON
 function getNestedValue(obj, keys) {
     const path = keys.split('.');
     try {
@@ -54,8 +52,7 @@ function getNestedValue(obj, keys) {
     }
 }
 
-// Function to create proxies for nested objects recursively
-function createNestedProxies(obj, rootProperty, childProperty) {
+function createNestedProxies(obj) {
     if (typeof obj !== 'object' || obj === null) {
         return obj;
     }
@@ -65,24 +62,25 @@ function createNestedProxies(obj, rootProperty, childProperty) {
             obj[key] = new Proxy(obj[key], {
                 set(target, property, value) {
                     target[property] = value;
-                    populateDOMElements(rootProperty, childProperty);
+                    populateDOMElements("xanoData", "xano-root", "xano-child");
                     return true;
-                }
+                },
             });
         }
     }
     return obj;
 }
 
-//Function to trigger proxies from data
 function bindData(data, tableName, rootProperty, childProperty) {
-    window[tableName] = new Proxy(createNestedProxies(data, rootProperty, childProperty), {
-        set(target, property, value) {
-            target[property] = value;
-            populateDOMElements(rootProperty, childProperty);
-            return true;
+    window[tableName] = new Proxy(
+        createNestedProxies(data),
+        {
+            set(target, property, value) {
+                target[property] = value;
+                populateDOMElements(tableName, rootProperty, childProperty);
+                return true;
+            },
         }
-    });
-    //First pass of populating DOM
-    populateDOMElements(rootProperty, childProperty)
+    );
+    populateDOMElements(tableName, rootProperty, childProperty);
 }
