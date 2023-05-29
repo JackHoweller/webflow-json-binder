@@ -1,7 +1,6 @@
 const createdElements = [];
 
 const populateDOMElements = (tableName, rootProperty, childProperty) => {
-    console.log("domPopulation", tableName, rootProperty, childProperty)
     createdElements.forEach((createdElement) => {
         createdElement.remove();
     });
@@ -9,7 +8,6 @@ const populateDOMElements = (tableName, rootProperty, childProperty) => {
     $(`[${rootProperty}]`).each((index, element) => {
         const root = $(element).attr(rootProperty);
         const value = getNestedValue(window[tableName], root);
-        console.log(value)
         if (Array.isArray(value)) {
             const originalElement = $(element);
             if (typeof value[0] === 'object') {
