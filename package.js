@@ -69,16 +69,18 @@ function createNestedProxies(obj) {
     return obj;
 }
 
-function bindData(data, tableName, rootProperty, childProperty) {
-    window[tableName] = new Proxy(
-        createNestedProxies(data),
-        {
-            set(target, property, value) {
-                target[property] = value;
-                populateDOMElements(tableName, rootProperty, childProperty);
-                return true;
-            },
-        }
-    );
-    populateDOMElements(tableName, rootProperty, childProperty);
+function bindData(data, tableName, rootProperty, childProperty, callback) {
+  const handler = {
+    set(target, property, value) {
+      target[property] = value;
+      populateDOMElements(tableName, rootProperty, childProperty);
+      if (callback && typeof callback === 'function') {
+        callback();
+      }
+      return true;
+    },
+  };
+
+  window[tableName] = new Proxy(createNestedProxies(data), handler);
+  populateDOMElements(tableName, rootProperty, childProperty);
 }
