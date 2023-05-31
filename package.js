@@ -27,10 +27,12 @@ const populateDOMElements = (tableName, rootProperty, childProperty) => {
                         const childKey = $(childElement).attr(childProperty);
                         const childValue = getNestedValue(item, childKey);
                         $(childElement).text(childValue);
+                        $(childElement).val(childValue);
                     });
                 } else {
                     clonedElement = $(element).clone();
                     clonedElement.text(item);
+                    clonedElement.val(item);
                     $(element).after(clonedElement);
                 }
                 createdElements.push(clonedElement);
