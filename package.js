@@ -52,17 +52,20 @@ function getNestedValue(obj, keys) {
     }
 }
 
-function createNestedProxies(obj) {
+function createNestedProxies(obj, tableName, rootProperty, childProperty, callback) {
     if (typeof obj !== 'object' || obj === null) {
         return obj;
     }
     for (let key in obj) {
         if (typeof obj[key] === 'object' && obj[key] !== null) {
-            obj[key] = createNestedProxies(obj[key]);
+            obj[key] = createNestedProxies(obj[key], tableName, rootProperty, childProperty, callback);
             obj[key] = new Proxy(obj[key], {
                 set(target, property, value) {
                     target[property] = value;
-                    populateDOMElements("xanoData", "xano-root", "xano-child");
+                    populateDOMElements(tableName, rootProperty, childProperty);
+                    if (callback && typeof callback === 'function') {
+                      callback();
+                    }
                     return true;
                 },
             });
@@ -83,6 +86,6 @@ function bindData(data, tableName, rootProperty, childProperty, callback) {
     },
   };
 
-  window[tableName] = new Proxy(createNestedProxies(data), handler);
+  window[tableName] = new Proxy(createNestedProxies(data, tableName, rootProperty, childProperty, callback), handler);
   populateDOMElements(tableName, rootProperty, childProperty);
 }
