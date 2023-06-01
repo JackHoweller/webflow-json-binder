@@ -26,13 +26,21 @@ const populateDOMElements = (tableName, rootProperty, childProperty) => {
                     $(`[${childProperty}]`, clonedElement).each((childIndex, childElement) => {
                         const childKey = $(childElement).attr(childProperty);
                         const childValue = getNestedValue(item, childKey);
-                        $(childElement).text(childValue);
-                        $(childElement).val(childValue);
+                        switch ($(childElement).prop('tagName').toLowerCase()) {
+                            case 'input': $(childElement).val(childValue); break;
+                            case 'img': $(childElement).attr('src', childValue); break;
+                            case 'a': $(childElement).attr('href', childValue); break;
+                            default: $(childElement).text(childValue);
+                        }
                     });
                 } else {
                     clonedElement = $(element).clone();
-                    clonedElement.text(item);
-                    clonedElement.val(item);
+                    switch (clonedElement.prop('tagName').toLowerCase()) {
+                        case 'input': clonedElement.val(item); break;
+                        case 'img': clonedElement.attr('src', item); break;
+                        case 'a': clonedElement.attr('href', item); break;
+                        default: clonedElement.text(item);
+                    }
                     $(element).after(clonedElement);
                 }
                 createdElements.push(clonedElement);
@@ -64,7 +72,7 @@ function createNestedProxies(obj, tableName, rootProperty, childProperty, callba
                     target[property] = value;
                     populateDOMElements(tableName, rootProperty, childProperty);
                     if (callback && typeof callback === 'function') {
-                      callback();
+                        callback();
                     }
                     return true;
                 },
@@ -75,17 +83,17 @@ function createNestedProxies(obj, tableName, rootProperty, childProperty, callba
 }
 
 function bindData(data, tableName, rootProperty, childProperty, callback) {
-  const handler = {
-    set(target, property, value) {
-      target[property] = value;
-      populateDOMElements(tableName, rootProperty, childProperty);
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-      return true;
-    },
-  };
+    const handler = {
+        set(target, property, value) {
+            target[property] = value;
+            populateDOMElements(tableName, rootProperty, childProperty);
+            if (callback && typeof callback === 'function') {
+                callback();
+            }
+            return true;
+        },
+    };
 
-  window[tableName] = new Proxy(createNestedProxies(data, tableName, rootProperty, childProperty, callback), handler);
-  populateDOMElements(tableName, rootProperty, childProperty);
+    window[tableName] = new Proxy(createNestedProxies(data, tableName, rootProperty, childProperty, callback), handler);
+    populateDOMElements(tableName, rootProperty, childProperty);
 }
