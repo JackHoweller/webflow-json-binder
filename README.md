@@ -19,42 +19,42 @@ If you make edits within the object, e.g. ```myTable.name = "NewName"```, the bo
 
 
 ### Fields
-**jsonObject:** Add your object here, e.g:
-```
-{
-  "firstName": "John",
-  "lastName": "Doe",
-  "age": 30,
-  "hobbies": ["reading", "running", "painting"],
-  "friends": [
-    {
-      "name": "Sarah",
-      "relation": "Sister",
-      "yearsConnected":12
-    },
-    {
-      "name": "Michael",
-      "relation": "Friend",
-      "yearsConnected":3
-    }
-  ]
-}
-```
-**tableName:** binding data creates an object attached to the page window to enable access across any functions in the page. The name you supply here will be the object name, e.g. ```window.myNameHere```
-**rootAttribute:** a name for the attribute you'll give to your elements to specify that they should be bound to a root from within your object, e.g.
-```
-<p myRootAttribute="name"></p>
-<p myRootAttribute="age"></p>
-<p myRootAttribute="hobbies"></p>
-```
-**arrayChildAttribute:** if you have an array of objects in your data, use this to handle parent/child relationships with elements. You might use this for a table, list or grid component, e.g.
-```
-<div myRootAttribute="friends">
-  <p myChildAttribute="name"></p>
-  <p myChildAttribute="relation"></p>
-</div>
-```
-**arrayChildAttribute:** optional, although you can add a callback here to track when changes are made. E.g. to submit updates back to an API.
+* **jsonObject:** Add your object here, e.g:
+  ```
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "age": 30,
+    "hobbies": ["reading", "running", "painting"],
+    "friends": [
+      {
+        "name": "Sarah",
+        "relation": "Sister",
+        "yearsConnected":12
+      },
+      {
+        "name": "Michael",
+        "relation": "Friend",
+        "yearsConnected":3
+      }
+    ]
+  }
+  ```
+* **tableName:** binding data creates an object attached to the page window to enable access across any functions in the page. The name you supply here will be the object name, e.g. ```window.myNameHere```
+* **rootAttribute:** a name for the attribute you'll give to your elements to specify that they should be bound to a root from within your object, e.g.
+  ```
+  <p myRootAttribute="name"></p>
+  <p myRootAttribute="age"></p>
+  <p myRootAttribute="hobbies"></p>
+  ```
+* **arrayChildAttribute:** if you have an array of objects in your data, use this to handle parent/child relationships with elements. You might use this for a table, list or grid component, e.g.
+  ```
+  <div myRootAttribute="friends">
+    <p myChildAttribute="name"></p>
+    <p myChildAttribute="relation"></p>
+  </div>
+  ```
+* **arrayChildAttribute:** optional, although you can add a callback here to track when changes are made. E.g. to submit updates back to an API.
 
 
 ### Insertion against different types of element:
