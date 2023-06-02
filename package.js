@@ -1,6 +1,15 @@
 const createdElements = [];
 
-const populateDOMElements = (tableName, rootProperty, childProperty) => {
+function updateElement(data, element) {
+    switch (element.prop('tagName').toLowerCase()) {
+        case 'input': element.val(data).trigger("input"); break;
+        case 'img': element.attr('src', data); break;
+        case 'a': element.attr('href', data); break;
+        default: element.text(data);
+    }
+}
+
+function populateDOMElements (tableName, rootProperty, childProperty) {
     createdElements.forEach((createdElement) => {
         createdElement.remove();
     });
@@ -15,46 +24,63 @@ const populateDOMElements = (tableName, rootProperty, childProperty) => {
             } else {
                 originalElement.empty()
             }
-            value.forEach((item) => {
+            value.forEach((arrayItem) => {
                 let clonedElement
-                if (typeof item === 'object') {
+                if (typeof arrayItem === 'object') {
                     clonedElement = originalElement.clone();
                     clonedElement.removeAttr(rootProperty);
                     clonedElement.show();
                     originalElement.after(clonedElement);
-
                     $(`[${childProperty}]`, clonedElement).each((childIndex, childElement) => {
                         const childKey = $(childElement).attr(childProperty);
-                        const childValue = getNestedValue(item, childKey);
-                        switch ($(childElement).prop('tagName').toLowerCase()) {
-                            case 'input': $(childElement).val(childValue).trigger("input"); break;
-                            case 'img': $(childElement).attr('src', childValue); break;
-                            case 'a': $(childElement).attr('href', childValue); break;
-                            default: $(childElement).text(childValue);
-                        }
+                        const childValue = getNestedValue(arrayItem, childKey);
+                        updateElement(childValue, $(childElement))
                     });
+                    childVisibilityOnDOM (clonedElement, arrayItem, childProperty)
                 } else {
                     clonedElement = $(element).clone();
-                    switch (clonedElement.prop('tagName').toLowerCase()) {
-                        case 'input': clonedElement.val(item).trigger("input"); break;
-                        case 'img': clonedElement.attr('src', item); break;
-                        case 'a': clonedElement.attr('href', item); break;
-                        default: clonedElement.text(item);
-                    }
+                    updateElement(arrayItem, clonedElement)
                     $(element).after(clonedElement);
                 }
                 createdElements.push(clonedElement);
             });
         } else {
-        	switch ($(element).prop('tagName').toLowerCase()) {
-                case 'input': $(element).val(item).trigger("input"); break;
-                case 'img': $(element).attr('src', item); break;
-                case 'a': $(element).attr('href', item); break;
-                default: $(element).text(item);
-            }
+            updateElement(value, $(element))
         }
     });
-};
+    rootVisibilityOnDOM(tableName, rootProperty, childProperty);
+}
+
+function evaluateComparison(operator, comparative, valueToCompare) {
+    switch (operator) {
+        case '==': return comparative == valueToCompare;
+        case '!==': return comparative !== valueToCompare;
+        case '>': return comparative > valueToCompare;
+        case '<': return comparative < valueToCompare;
+        default: return false;
+    }
+}
+
+function rootVisibilityOnDOM(tableName, rootProperty) {
+    $(`[${rootProperty}-visibility]`).each((index, element) => {
+        const formula = $(element).attr(rootProperty).split(/(===|!==|==|<|>)/);
+        const comparative = formula [2]
+        const valueToCompare = getNestedValue(window[tableName], formula[0]);
+        $(element).toggle(evaluateComparison(formula [1], comparative, valueToCompare))
+    });
+}
+
+function childVisibilityOnDOM(parent, arrayItem, childProperty) {
+    $(parent).children().each((index, element) => {
+        const formula = $(element).attr(`${childProperty}-visibility`);
+        if (formula) {
+            const parts = formula.split(/(===|!==|==|<|>)/);
+            const comparative = parts[2];
+            const valueToCompare = getNestedValue(arrayItem, parts[0]);
+            $(element).toggle(evaluateComparison(parts[1], comparative, valueToCompare));
+        }
+    });
+}
 
 function getNestedValue(obj, keys) {
     const path = keys.split('.');
