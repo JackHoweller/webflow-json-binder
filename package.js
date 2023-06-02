@@ -27,7 +27,7 @@ const populateDOMElements = (tableName, rootProperty, childProperty) => {
                         const childKey = $(childElement).attr(childProperty);
                         const childValue = getNestedValue(item, childKey);
                         switch ($(childElement).prop('tagName').toLowerCase()) {
-                            case 'input': $(childElement).val(childValue); break;
+                            case 'input': $(childElement).val(childValue).trigger("input"); break;
                             case 'img': $(childElement).attr('src', childValue); break;
                             case 'a': $(childElement).attr('href', childValue); break;
                             default: $(childElement).text(childValue);
@@ -36,7 +36,7 @@ const populateDOMElements = (tableName, rootProperty, childProperty) => {
                 } else {
                     clonedElement = $(element).clone();
                     switch (clonedElement.prop('tagName').toLowerCase()) {
-                        case 'input': clonedElement.val(item); break;
+                        case 'input': clonedElement.val(item).trigger("input"); break;
                         case 'img': clonedElement.attr('src', item); break;
                         case 'a': clonedElement.attr('href', item); break;
                         default: clonedElement.text(item);
@@ -47,7 +47,7 @@ const populateDOMElements = (tableName, rootProperty, childProperty) => {
             });
         } else {
         	switch ($(element).prop('tagName').toLowerCase()) {
-                case 'input': $(element).val(item); break;
+                case 'input': $(element).val(item).trigger("input"); break;
                 case 'img': $(element).attr('src', item); break;
                 case 'a': $(element).attr('href', item); break;
                 default: $(element).text(item);
