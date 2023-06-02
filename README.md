@@ -1,4 +1,7 @@
 # JSON Object binder - designed for Webflow
+A simple way to populate, update and control a Webflow page using only Webflow attributes and a data object. Includes callbacks for data updates and conditional visibility.
+
+
 ## Install via CDN
 Simply add the following script tag to your Webflow before ```</body>``` custom code entry:
 ```
@@ -13,6 +16,8 @@ bindData(jsonObject, "tableName", "rootAttribute", "arrayChildAttribute", myOpti
 Once bound, any elements using root or child sttributes specified will automatically be updated based on the JSON root named against the attribute, e.g. ```myRootAttribute="name"```.
 
 If you make edits within the object, e.g. ```myTable.name = "NewName"```, the bound elements will refresh to stay up-to-date.
+
+
 ### Fields
 **jsonObject:** Add your object here, e.g:
 ```
@@ -51,12 +56,14 @@ If you make edits within the object, e.g. ```myTable.name = "NewName"```, the bo
 ```
 **arrayChildAttribute:** optional, although you can add a callback here to track when changes are made. E.g. to submit updates back to an API.
 
+
 ### Insertion against different types of element:
 * **Div/text:** replaces the displayed text.
 * **Input:** replaces the input value.
 * **Image:** replaces the image source.
 * **Link:** replaces the link href, NOT the link text.
 * **Other:** attempts to replace text content. For some types, this will simply not display.
+
 
 ## Conditional visibility:
 In addition to inserting and updating data, you can specify conditional visibility of elements based on your JSON object by adding ```-visibility``` next to the root table, e.g.
@@ -77,12 +84,14 @@ In this case, Sarah's details would display, but Michael would not.
 
 Root attributes operate separately from child attributes since we're dealing with an array of objects. Applying visibility conditions to the root object will result in the entire array being shown or not, whereas child attributes will only impact one object in an array.
 
+
 ### Supported operators
 Visibility formulae support a subset of comparison operators. They strictly DO NOT use eval(), and do not type match:
 * **==** - Equal to
 * **!==** - Not equal to
 * **<** - Less than
 * **>** - More than
+
 
 ## Notes/limitations
 - JSON roots can be as complex as you like, e.g. ```data.name.root``` would work so long as your JSON object has a value at that root.
