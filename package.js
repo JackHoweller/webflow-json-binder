@@ -46,7 +46,12 @@ const populateDOMElements = (tableName, rootProperty, childProperty) => {
                 createdElements.push(clonedElement);
             });
         } else {
-            $(element).text(value);
+        	switch ($(element).prop('tagName').toLowerCase()) {
+                case 'input': $(element).val(item); break;
+                case 'img': $(element).attr('src', item); break;
+                case 'a': $(element).attr('href', item); break;
+                default: $(element).text(item);
+            }
         }
     });
 };
