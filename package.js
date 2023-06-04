@@ -129,13 +129,25 @@ function bindData(data, tableName, rootProperty, childProperty, callback) {
     populateDOMElements(tableName, rootProperty, childProperty);
 }
 
-function getFormObject(formId) {
-  const form = $(`#${formId}`);
+function getFormData(formId) {
   const formData = {};
-
-  form.serializeArray().forEach(({ name, value }) => {
-    formData[name] = value;
+  const form = $(`#${formId}`);
+  
+  form.find(':input').each(function() {
+    const input = $(this);
+    const name = input.attr('name');
+    const value = input.val();
+    
+    if (input.is(':checkbox')) {
+      formData[name] = input.is(':checked');
+    } else if (input.is('select[multiple]')) {
+      formData[name] = input.find('option:selected').map(function() {
+        return $(this).val();
+      }).get();
+    } else {
+      formData[name] = value;
+    }
   });
-
+  
   return formData;
 }
