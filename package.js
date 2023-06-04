@@ -128,3 +128,14 @@ function bindData(data, tableName, rootProperty, childProperty, callback) {
     window[tableName] = new Proxy(createNestedProxies(data, tableName, rootProperty, childProperty, callback), handler);
     populateDOMElements(tableName, rootProperty, childProperty);
 }
+
+function getFormObject(formId) {
+  const form = $(`#${formId}`);
+  const formData = {};
+
+  form.serializeArray().forEach(({ name, value }) => {
+    formData[name] = value;
+  });
+
+  return formData;
+}
