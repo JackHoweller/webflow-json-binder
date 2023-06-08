@@ -71,7 +71,7 @@ function rootVisibilityOnDOM(tableName, rootProperty) {
 }
 
 function childVisibilityOnDOM(parent, arrayItem, childProperty) {
-    $(parent).children().each((index, element) => {
+    $(parent).find('*').each((index, element) => {
         const formula = $(element).attr(`${childProperty}-visibility`);
         if (formula) {
             const parts = formula.split(/(===|!==|==|<|>)/);
