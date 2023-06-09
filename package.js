@@ -67,11 +67,15 @@ function populateDOMElements (tableName, rootProperty, childProperty) {
 }
 
 function evaluateComparison(operator, comparative, valueToCompare) {
+    if (typeof valueToCompare === 'boolean') {
+        valueToCompare = valueToCompare ? 'true' : 'false';
+    }
+  
     switch (operator) {
-        case '==': return comparative == valueToCompare;
-        case '!==': return comparative !== valueToCompare;
-        case '>': return comparative > valueToCompare;
-        case '<': return comparative < valueToCompare;
+        case '==': return valueToCompare == comparative;
+        case '!==': return valueToCompare !== comparative;
+        case '>': return valueToCompare > comparative;
+        case '<': return valueToCompare < comparative;
         default: return false;
     }
 }
@@ -80,7 +84,7 @@ function rootVisibilityOnDOM(tableName, rootProperty) {
     $(`[${rootProperty}-visibility]`).each((index, element) => {
         const formula = $(element).attr(rootProperty).split(/(===|!==|==|<|>)/);
         const comparative = formula [2]
-        const valueToCompare = getNestedValue(window[tableName], formula[0]);
+        let valueToCompare = getNestedValue(window[tableName], formula[0]);
         $(element).toggle(evaluateComparison(formula [1], comparative, valueToCompare))
     });
 }
@@ -91,7 +95,7 @@ function childVisibilityOnDOM(parent, arrayItem, childProperty) {
         if (formula) {
             const parts = formula.split(/(===|!==|==|<|>)/);
             const comparative = parts[2];
-            const valueToCompare = getNestedValue(arrayItem, parts[0]);
+            let valueToCompare = getNestedValue(arrayItem, parts[0]);
             $(element).toggle(evaluateComparison(parts[1], comparative, valueToCompare));
         }
     });
