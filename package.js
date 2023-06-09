@@ -1,3 +1,18 @@
+$(document).ready(() => {
+  const skeletonElements = $('[skeleton-load]');
+
+  skeletonElements.each((index, element) => {
+    const skeletonDiv = $('<div class="skeleton-loader"></div>');
+
+    $(element).css('position', 'relative').append(skeletonDiv);
+
+    setTimeout(() => {
+      const skeletonDiv = $('.skeleton-loader');
+      skeletonDiv.remove();
+    }, 1400);
+  });
+});
+
 const createdElements = [];
 
 function updateElement(data, element) {
