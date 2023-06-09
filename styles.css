@@ -1,0 +1,40 @@
+.skeleton-loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom right, var(--surface-1) 25%, var(--surface-2) 50%, var(--surface-3) 75%);
+  background-size: 200% 200%;
+  z-index: 1000;
+  animation: skeleton 1.3s linear;
+}
+
+@keyframes skeleton {
+  0% { background-position: 0% 0; }
+  80% { background-position: 100% 0; opacity: 1; }
+  100% { background-position: 100% 0; opacity: 0; }
+}
+
+[ms-code-skeleton] {
+  background-clip: padding-box;
+}
+
+.snackbar-container {
+	transition-property: top,right,bottom,left,opacity !important;
+  -webkit-transition-property: top,right,bottom,left,opacity !important;
+  -ms-transition-property: top,right,bottom,left,opacity !important;
+  background-color: var(--surface-2) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, .2);
+  border-radius: 8px;
+}
+
+.snackbar-container p {
+  color: var(--color-on-surface-1) !important;
+}
+
+.snackbar-container button {
+  color: var(--inactive-accent-color) !important;
+  background-color: transparent !important;
+}
