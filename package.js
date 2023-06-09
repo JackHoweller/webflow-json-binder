@@ -9,7 +9,7 @@ $(document).ready(() => {
     setTimeout(() => {
       const skeletonDiv = $('.skeleton-loader');
       skeletonDiv.remove();
-    }, 1400);
+    }, 1250);
   });
 });
 
