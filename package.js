@@ -34,7 +34,7 @@ function populateDOMElements (tableName, rootProperty, childProperty) {
         const value = getNestedValue(window[tableName], root);
         if (Array.isArray(value)) {
             const originalElement = $(element);
-            if (typeof value[0] === 'object') {
+            if (typeof value[0] === 'object' || value.length == 0) {
                 originalElement.hide();
             } else {
                 originalElement.empty()
