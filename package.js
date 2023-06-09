@@ -122,7 +122,7 @@ function createNestedProxies(obj, tableName, rootProperty, childProperty, callba
                     target[property] = value;
                     populateDOMElements(tableName, rootProperty, childProperty);
                     if (callback && typeof callback === 'function') {
-                        callback();
+                      debounce(callback, 1000);
                     }
                     return true;
                 },
@@ -138,7 +138,7 @@ function bindData(data, tableName, rootProperty, childProperty, callback) {
             target[property] = value;
             populateDOMElements(tableName, rootProperty, childProperty);
             if (callback && typeof callback === 'function') {
-                callback();
+              debounce(callback, 1000);
             }
             return true;
         },
@@ -146,6 +146,18 @@ function bindData(data, tableName, rootProperty, childProperty, callback) {
 
     window[tableName] = new Proxy(createNestedProxies(data, tableName, rootProperty, childProperty, callback), handler);
     populateDOMElements(tableName, rootProperty, childProperty);
+}
+
+let debounceTimeoutId = null;
+
+function debounce(callback, delay) {
+    if (debounceTimeoutId) {
+        clearTimeout(debounceTimeoutId);
+    }
+    debounceTimeoutId = setTimeout(() => {
+        callback();
+        debounceTimeoutId = null;
+    }, delay);
 }
 
 function getFormData(formId) {
