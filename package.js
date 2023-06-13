@@ -67,9 +67,12 @@ function populateDOMElements (tableName, rootProperty, childProperty) {
 }
 
 function evaluateComparison(operator, comparative, valueToCompare) {
-    if (typeof valueToCompare === 'boolean') {
-        valueToCompare = valueToCompare ? 'true' : 'false';
+    if (valueToCompare == "true") {
+      valueToCompare = true
     }
+    else if (valueToCompare == "false") {
+      valueToCompare = false 
+    };
   
     switch (operator) {
         case '==': return valueToCompare == comparative;
