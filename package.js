@@ -67,6 +67,7 @@ function populateDOMElements (tableName, rootProperty, childProperty) {
 }
 
 function evaluateComparison(operator, comparative, valueToCompare) {
+    console.log(operator, comparative, valueToCompare)
     if (valueToCompare == "true") {
       valueToCompare = true
     }
