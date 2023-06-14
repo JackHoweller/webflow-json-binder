@@ -67,11 +67,11 @@ function populateDOMElements (tableName, rootProperty, childProperty) {
 }
 
 function evaluateComparison(operator, comparative, valueToCompare) {
-    if (valueToCompare.trim() !== '' && valueToCompare.toLowerCase().includes('true')) {
-        valueToCompare = true;
+    if (comparative.trim() !== '' && comparative.toLowerCase().includes('true')) {
+        comparative = true;
     }
-    else if (valueToCompare.trim() !== '' && valueToCompare.toLowerCase().includes('false')) {
-        valueToCompare = false;
+    else if (comparative.trim() !== '' && comparative.toLowerCase().includes('false')) {
+        comparative = false;
     }
   
     switch (operator) {
@@ -86,7 +86,7 @@ function evaluateComparison(operator, comparative, valueToCompare) {
 function rootVisibilityOnDOM(tableName, rootProperty) {
     $(`[${rootProperty}-visibility]`).each((index, element) => {
         const formula = $(element).attr(`${rootProperty}-visibility`).split(/(===|!==|==|<|>)/);
-        const comparative = formula [2]
+        let comparative = formula [2]
         let valueToCompare = getNestedValue(window[tableName], formula[0]);
         $(element).toggle(evaluateComparison(formula [1], comparative, valueToCompare))
     });
@@ -97,7 +97,7 @@ function childVisibilityOnDOM(parent, arrayItem, childProperty) {
         const formula = $(element).attr(`${childProperty}-visibility`);
         if (formula) {
             const parts = formula.split(/(===|!==|==|<|>)/);
-            const comparative = parts[2];
+            let comparative = parts[2];
             let valueToCompare = getNestedValue(arrayItem, parts[0]);
             $(element).toggle(evaluateComparison(parts[1], comparative, valueToCompare));
         }
