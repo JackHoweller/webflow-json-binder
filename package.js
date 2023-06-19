@@ -5,13 +5,17 @@ $(document).ready(() => {
     const skeletonDiv = $('<div class="skeleton-loader"></div>');
 
     $(element).css('position', 'relative').append(skeletonDiv);
-
-    setTimeout(() => {
-      const skeletonDiv = $('.skeleton-loader');
-      skeletonDiv.remove();
-    }, 1250);
   });
 });
+
+function removeSkeleton() {
+  setTimeout(() => {
+    $('.skeleton-loader').css("opacity", 0)
+    setTimeout(() => {
+      $('.skeleton-loader').remove();
+    }, 400);
+  }, 300);
+}
 
 const createdElements = [];
 
@@ -149,6 +153,7 @@ function bindData(data, tableName, rootProperty, childProperty, callback) {
 
     window[tableName] = new Proxy(createNestedProxies(data, tableName, rootProperty, childProperty, callback), handler);
     populateDOMElements(tableName, rootProperty, childProperty);
+    removeSkeleton()
 }
 
 let debounceTimeoutId = null;
