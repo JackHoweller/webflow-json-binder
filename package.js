@@ -6,7 +6,28 @@ $(document).ready(() => {
 
     $(element).css('position', 'relative').append(skeletonDiv);
   });
+
+  $(window).on('error', function(event) {
+    if (event.message.includes('Did not receive CSRF token')) {
+      location.reload();
+    }
+  });
 });
+
+function findObjectByUUID(obj, uuid) {
+  if (obj.uuid === uuid) {
+    return obj;
+  }
+  for (const key in obj) {
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      const result = findObjectByUUID(obj[key], uuid);
+      if (result !== null) {
+        return result;
+      }
+    }
+  }
+  return null;
+}
 
 function removeSkeleton() {
   setTimeout(() => {
