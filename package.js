@@ -138,8 +138,6 @@ function getNestedValue(obj, keys) {
     }
 }
 
-let isFirstRequest = true;
-
 function createNestedProxies(obj, tableName, rootProperty, childProperty, callback) {
     if (typeof obj !== 'object' || obj === null) {
         return obj;
@@ -151,8 +149,8 @@ function createNestedProxies(obj, tableName, rootProperty, childProperty, callba
                 set(target, property, value) {
                     target[property] = value;
                     populateDOMElements(tableName, rootProperty, childProperty);
-                    if (!isFirstRequest && callback && typeof callback === 'function') {
-                        debounce(callback, 1000);
+                    if (callback && typeof callback === 'function') {
+                        debounce(callback);
                     }
                     return true;
                 },
@@ -167,8 +165,8 @@ function bindData(data, tableName, rootProperty, childProperty, callback) {
         set(target, property, value) {
             target[property] = value;
             populateDOMElements(tableName, rootProperty, childProperty);
-            if (!isFirstRequest && callback && typeof callback === 'function') {
-                debounce(callback, 1000);
+            if (callback && typeof callback === 'function') {
+                debounce(callback);
             }
             return true;
         },
@@ -177,19 +175,23 @@ function bindData(data, tableName, rootProperty, childProperty, callback) {
     window[tableName] = new Proxy(createNestedProxies(data, tableName, rootProperty, childProperty, callback), handler);
     populateDOMElements(tableName, rootProperty, childProperty);
     removeSkeleton();
-    isFirstRequest = false;
 }
 
-let debounceTimeoutId = null;
+let isFirstRequest = true;
 
-function debounce(callback, delay) {
-    if (debounceTimeoutId) {
-        clearTimeout(debounceTimeoutId);
+function debounce(callback) {
+    if (isFirstRequest) {
+        isFirstRequest = false
+        callback()
+        setTimeout(() => {
+            isFirstRequest = true
+        }, 1000)
     }
-    debounceTimeoutId = setTimeout(() => {
-        callback();
-        debounceTimeoutId = null;
-    }, delay);
+    else {
+        setTimeout(() => {
+            isFirstRequest = true
+        }, 1000)
+    }
 }
 
 function getFormData(formId) {
