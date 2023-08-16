@@ -114,6 +114,7 @@ function rootVisibilityOnDOM(tableName, rootProperty) {
         let comparative = formula [2]
         let valueToCompare = getNestedValue(window[tableName], formula[0]);
         $(element).toggle(evaluateComparison(formula [1], comparative, valueToCompare))
+        $(element).css('opacity', + evaluateComparison(formula [1], comparative, valueToCompare))
     });
 }
 
@@ -125,6 +126,7 @@ function childVisibilityOnDOM(parent, arrayItem, childProperty) {
             let comparative = parts[2];
             let valueToCompare = getNestedValue(arrayItem, parts[0]);
             $(element).toggle(evaluateComparison(parts[1], comparative, valueToCompare));
+            $(element).css('opacity', + evaluateComparison(parts[1], comparative, valueToCompare));
         }
     });
 }
