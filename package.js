@@ -38,7 +38,7 @@ function removeSkeleton() {
   }, 300);
 }
 
-const createdElements = [];
+const createdElements = {};
 
 function updateElement(data, element) {
     switch (element.prop('tagName').toLowerCase()) {
@@ -50,10 +50,13 @@ function updateElement(data, element) {
 }
 
 function populateDOMElements (tableName, rootProperty, childProperty) {
-    createdElements.forEach((createdElement) => {
+    if (!createdElements[tableName]) {
+        createdElements[tableName] = [];
+    }
+    createdElements[tableName].forEach((createdElement) => {
         createdElement.remove();
     });
-    createdElements.length = 0;
+    createdElements[tableName].length = 0;
     $(`[${rootProperty}]`).each((index, element) => {
         const root = $(element).attr(rootProperty);
         const value = getNestedValue(window[tableName], root);
@@ -82,7 +85,7 @@ function populateDOMElements (tableName, rootProperty, childProperty) {
                     updateElement(arrayItem, clonedElement)
                     $(element).after(clonedElement);
                 }
-                createdElements.push(clonedElement);
+                createdElements[tableName].push(clonedElement);
             });
         } else {
             updateElement(value, $(element))
