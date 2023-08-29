@@ -8,8 +8,10 @@ $(document).ready(() => {
   });
 
   $(window).on('error', function(event) {
-    if (event.message.includes('Did not receive CSRF token')) {
-      location.reload();
+    if (event.message) {
+      if (event.message.includes('Did not receive CSRF token')) {
+        location.reload();
+      }
     }
   });
 });
