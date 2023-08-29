@@ -45,6 +45,8 @@ const createdElements = {};
 function updateElement(data, element) {
     switch (element.prop('tagName').toLowerCase()) {
         case 'input': element.val(data).trigger("input"); break;
+        case 'select': element.val(data).trigger("input"); break;
+        case 'textarea': element.val(data).trigger("input"); break;
         case 'img': element.attr('src', data); break;
         case 'a': element.attr('href', data); break;
         default: element.text(data);
