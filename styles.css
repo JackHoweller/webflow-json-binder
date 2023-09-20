@@ -76,7 +76,7 @@
 }
 
 .toast__icon {
-  color: white;
+  color: currentcolor;
   border-radius: 100%;
   width: 32px;
   height: 32px;
@@ -90,6 +90,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: currentcolor;
   margin: 10px;
 }
 
@@ -97,6 +98,7 @@
   display: inline-flex;
   padding: 10px 10px 10px 10px;
   margin-left: -5px;
+  color: currentcolor;
   border: none;
   cursor: pointer;
   border-radius: 50px;
