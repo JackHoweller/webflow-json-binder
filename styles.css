@@ -20,22 +20,95 @@
   background-clip: padding-box;
 }
 
-.snackbar-container {
-	transition-property: top,right,bottom,left,opacity !important;
-  -webkit-transition-property: top,right,bottom,left,opacity !important;
-  -ms-transition-property: top,right,bottom,left,opacity !important;
-  background-color: var(--surface-2) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, .2);
-  border-radius: 8px;
+.toast {
+  position: fixed;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.snackbar-container p {
-  color: var(--color-on-surface-1) !important;
+.toast.launch {
+  transform: translate(-50%, -80px);
+  opacity: 1;
 }
 
-.snackbar-container button {
-  color: var(--inactive-accent-color) !important;
-  background-color: transparent !important;
+.toast.info {
+  color: var(--active-accent-color, #00509a);
+  background-color: var(--inactive-accent-color, #dce9f5);
+}
+
+.toast.info .toast__icon {
+  background-color: #3498db;
+}
+
+.toast.success {
+  color: #006e20;
+  background-color: #dcf5e5;
+}
+
+.toast.success .toast__icon {
+  background-color: #2ecc71;
+}
+
+.toast.warning {
+  color: #a75900;
+  background-color: #fcead7;
+}
+
+.toast.warning .toast__icon {
+  background-color: #f39c12;
+}
+
+.toast.error {
+  color: #950f00;
+  background-color: #ffe4e0;
+}
+
+.toast.error .toast__icon {
+  background-color: #e74c3c;
+}
+
+.toast__icon {
+  color: white;
+  border-radius: 100%;
+  width: 32px;
+  height: 32px;
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast__text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 10px;
+}
+
+.toast__button {
+  display: inline-flex;
+  padding: 10px 10px 10px 10px;
+  margin-left: -5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50px;
+  transition: background-color 0.3s ease;
+}
+
+.toast__button:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+.toast__button:active {
+  background-color: rgba(0,0,0,0.05);
 }
 
 .gu-mirror {
