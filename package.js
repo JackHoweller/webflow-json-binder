@@ -7,6 +7,10 @@ $(document).ready(() => {
     $(element).css('position', 'relative').append(skeletonDiv);
   });
 
+  let script = $("<script>");
+  script.attr("src", "https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/toast.js");
+  $("body").append(script);
+
   $(window).on('error', function(event) {
     if (event.message) {
       if (event.message.includes('Did not receive CSRF token')) {
