@@ -92,6 +92,26 @@ Visibility formulae support a subset of comparison operators. They strictly DO N
 * **<** - Less than
 * **>** - More than
 
+## Additional functions
+
+### Toasts
+You can call a toast to appear on-screen at any time using the following function:
+```
+toast("message here", "type - optional", actionFunctionOptional)
+```
+or just for a basic information toast:
+```
+toast("message here")
+```
+Toast types will change the colour and icon on your toast. You can have any of:
+* **info** - Default, blue if you don't have an accent color set in css
+* **success** - Green with a checkmark icon
+* **warning** - Orange with a warning triangle icon
+* **error** - Red with a warning triangle icon
+You can optionally set an action function for the user to click. By default, this is a cross to close the modal. Custom actions are indicated by an arrow on the toast.
+
+### Skeletal loading
+You can add the ```skeleton-load``` attribute to an object in Webflow (any shape). Adding this attribute will trigger a skeletal UI overlay to appear on the element until removed. To remove all skeleton loading UI, you can call ```removeSkeleton()```.
 
 ## Notes/limitations
 - JSON roots can be as complex as you like, e.g. ```data.name.root``` would work so long as your JSON object has a value at that root.
