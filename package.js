@@ -1,24 +1,42 @@
 $(document).ready(() => {
-  const skeletonElements = $('[skeleton-load]');
-
-  skeletonElements.each((index, element) => {
-    const skeletonDiv = $('<div class="skeleton-loader"></div>');
-
-    $(element).css('position', 'relative').append(skeletonDiv);
-  });
-
-  let script = $("<script>");
-  script.attr("src", "https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/toast.js");
-  $("body").append(script);
-
-  $(window).on('error', function(event) {
-    if (event.message) {
-      if (event.message.includes('Did not receive CSRF token')) {
-        location.reload();
-      }
-    }
-  });
+  startSkeleton()
+  loadToast()
+  backstopCSRF()
 });
+
+const loadToast = () => {
+  const scriptSrc = "https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/toast.js";
+  const $script = $("<script>").attr("src", scriptSrc);
+  $("body").append($script);
+};
+
+function startSkeleton() {
+  $('[skeleton-load]').each((index, element) => {
+    $(element).css('position', 'relative').append('<div class="skeleton-loader"></div>');
+  });
+}
+
+function removeSkeleton() {
+  setTimeout(() => {
+    $('.skeleton-loader').css("opacity", 0)
+    setTimeout(() => {
+      $('.skeleton-loader').remove();
+    }, 400);
+  }, 300);
+}
+
+const backstopCSRF = () => {
+  setTimeout(() => {
+    const refreshCount = parseInt(sessionStorage.getItem('refreshCount')) || 0;
+    
+    if ($('.skeleton-loader').length > 0 && refreshCount < 2) {
+      sessionStorage.setItem('refreshCount', (refreshCount + 1).toString());
+      location.reload();
+    } else {
+      sessionStorage.removeItem('refreshCount');
+    }
+  }, 5000);
+};
 
 function findObjectByUUID(obj, uuid) {
   if (obj.uuid === uuid) {
@@ -35,25 +53,24 @@ function findObjectByUUID(obj, uuid) {
   return null;
 }
 
-function removeSkeleton() {
-  setTimeout(() => {
-    $('.skeleton-loader').css("opacity", 0)
-    setTimeout(() => {
-      $('.skeleton-loader').remove();
-    }, 400);
-  }, 300);
-}
-
 const createdElements = {};
 
 function updateElement(data, element) {
-    switch (element.prop('tagName').toLowerCase()) {
-        case 'input': element.val(data).trigger("input"); break;
-        case 'select': element.val(data).trigger("input"); break;
-        case 'textarea': element.val(data).trigger("input"); break;
-        case 'img': element.attr('src', data); break;
-        case 'a': element.attr('href', data); break;
-        default: element.text(data);
+    const tagName = element.prop('tagName').toLowerCase();
+    switch (tagName) {
+        case 'input':
+        case 'select':
+        case 'textarea':
+            element.val(data).trigger("input");
+            break;
+        case 'img':
+            element.attr('src', data);
+            break;
+        case 'a':
+            element.attr('href', data);
+            break;
+        default:
+            element.text(data);
     }
 }
 
