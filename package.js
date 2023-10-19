@@ -4,7 +4,7 @@ $(document).ready(() => {
   backstopCSRF()
 });
 
-const loadToast = () => {
+function loadToast() {
   const scriptSrc = "https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/toast.js";
   const $script = $("<script>").attr("src", scriptSrc);
   $("body").append($script);
@@ -25,7 +25,7 @@ function removeSkeleton() {
   }, 300);
 }
 
-const backstopCSRF = () => {
+function backstopCSRF() {
   setTimeout(() => {
     const refreshCount = parseInt(sessionStorage.getItem('refreshCount')) || 0;
     
@@ -56,21 +56,26 @@ function findObjectByUUID(obj, uuid) {
 const createdElements = {};
 
 function updateElement(data, element) {
+    let newData = data
+
+    if (/^\d{13}$/.test(newData)) {
+      newData = new Date(newData).toLocaleDateString('en-GB')
+    }
     const tagName = element.prop('tagName').toLowerCase();
     switch (tagName) {
         case 'input':
         case 'select':
         case 'textarea':
-            element.val(data).trigger("input");
+            element.val(newData).trigger("input");
             break;
         case 'img':
-            element.attr('src', data);
+            element.attr('src', newData);
             break;
         case 'a':
-            element.attr('href', data);
+            element.attr('href', newData);
             break;
         default:
-            element.text(data);
+            element.text(newData);
     }
 }
 
