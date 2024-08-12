@@ -10,13 +10,13 @@ function loadToast() {
   $("body").append($script);
 };
 
-function startSkeleton() {
+window.startSkeleton = function() {
   $('[skeleton-load]').each((index, element) => {
     $(element).css('position', 'relative').append('<div class="skeleton-loader"></div>');
   });
 }
 
-function removeSkeleton() {
+window.removeSkeleton = function() {
   setTimeout(() => {
     $('.skeleton-loader').css("opacity", 0)
     setTimeout(() => {
