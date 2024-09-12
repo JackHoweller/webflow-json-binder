@@ -165,7 +165,17 @@ function childVisibilityOnDOM(parent, arrayItem, childProperty) {
 }
 
 function getNestedValue(obj, keys) {
-    const path = keys.split('.');
+    const path = keys.split('.').reduce((acc, key) => {
+        const arrayMatch = key.match(/(\w+)\[(\d+)\]/);
+        if (arrayMatch) {
+            acc.push(arrayMatch[1]);
+            acc.push(Number(arrayMatch[2]));
+        } else {
+            acc.push(key);
+        }
+        return acc;
+    }, []);
+    
     try {
         return path.reduce((result, key) => result[key], obj);
     } catch (e) {
