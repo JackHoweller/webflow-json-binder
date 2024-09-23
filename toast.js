@@ -1,27 +1,27 @@
-function getButtonRounding() {
-    const cornerRadiusCounts = {};
-    let mostCommonRadius = null;
-    let maxCount = 0;
+$(document).ready(function () {
+  const cornerRadiusCounts = {};
+  let mostCommonRadius = null;
+  let maxCount = 0;
 
-    $('a').each(function() {
-      const cornerRadius = parseInt($(this).css('border-radius'));
-      cornerRadiusCounts[cornerRadius] = (cornerRadiusCounts[cornerRadius] || 0) + 1;
+  $('a').each(function () {
+    const cornerRadius = parseInt($(this).css('border-radius'));
+    cornerRadiusCounts[cornerRadius] = (cornerRadiusCounts[cornerRadius] || 0) + 1;
 
-      if (cornerRadius > 0) {
-        if (cornerRadiusCounts[cornerRadius] > maxCount) {
-          mostCommonRadius = cornerRadius;
-          maxCount = cornerRadiusCounts[cornerRadius];
-        }
-      } else if (mostCommonRadius === null) {
-        mostCommonRadius = 0;
-        maxCount = 1;
+    if (cornerRadius > 0) {
+      if (cornerRadiusCounts[cornerRadius] > maxCount) {
+        mostCommonRadius = cornerRadius;
+        maxCount = cornerRadiusCounts[cornerRadius];
       }
-    });
+    } else if (mostCommonRadius === null) {
+      mostCommonRadius = 0;
+      maxCount = 1;
+    }
+  });
 
-    window.buttonRadius = mostCommonRadius ?? 50
-}
+  window.buttonRadius = mostCommonRadius ?? 50
+});
 
-function toast(text, type = "info", callback = null) {
+window.toast = function(text, type = "info", callback = null) {
   const timeout = 3000
   const icon = $("<div>").addClass("toast__icon")
 
@@ -50,11 +50,11 @@ function toast(text, type = "info", callback = null) {
   let action
   if (callback && typeof callback === "function") {
     action = $("<a><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.863\" height=\"11.031\" viewBox=\"0 0 12.863 11.031\"><path d=\"M7.344-2.838a.92.92,0,0,0,0-1.3L2.75-8.733a.92.92,0,0,0-1.3,0,.92.92,0,0,0,0,1.3L4.478-4.405h-8.81a.918.918,0,0,0-.919.919.918.918,0,0,0,.919.919H4.476L1.452.459a.92.92,0,0,0,1.3,1.3L7.347-2.835Z\" transform=\"translate(5.25 9.002)\" fill=\"currentColor\"/></svg></a>").addClass("toast__button").css("border-radius", (window.buttonRadius * 1.25));
-    action.on("click", function(){callback()})
+    action.on("click", function () { callback() })
   }
   else {
     action = $("<a><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.863\" height=\"12.863\" viewBox=\"0 0 12.863 12.863\"><path d=\"M8.731-6.055a1.288,1.288,0,0,0,0-1.82,1.288,1.288,0,0,0-1.82,0L2.68-3.64-1.555-7.871a1.288,1.288,0,0,0-1.82,0,1.288,1.288,0,0,0,0,1.82L.86-1.82-3.371,2.415a1.288,1.288,0,0,0,0,1.82,1.288,1.288,0,0,0,1.82,0L2.68,0,6.915,4.231a1.287,1.287,0,0,0,1.82-1.82L4.5-1.82,8.731-6.055Z\" transform=\"translate(3.752 8.252)\" fill=\"currentColor\"/></svg></a>").addClass("toast__button").css("border-radius", (window.buttonRadius * 1.25));
-    action.on("click", function(){
+    action.on("click", function () {
       toast.removeClass("launch");
       setTimeout(function () {
         toast.remove();
@@ -76,7 +76,3 @@ function toast(text, type = "info", callback = null) {
     }, timeout);
   }, 50);
 }
-
-$(document).ready(function(){
-  getButtonRounding()
-});

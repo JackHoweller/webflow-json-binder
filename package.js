@@ -1,28 +1,21 @@
 $(document).ready(() => {
-  startSkeleton()
-  loadToast()
-  backstopCSRF()
+  loadScript("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/skeleton.js");
+  loadScript("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/toast.js");
+  loadStylesheet("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/styles.css");
+  backstopCSRF();
 });
 
-function loadToast() {
-  const scriptSrc = "https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/toast.js";
+function loadScript(scriptSrc) {
   const $script = $("<script>").attr("src", scriptSrc);
   $("body").append($script);
-};
-
-window.startSkeleton = function() {
-  $('[skeleton-load]').each((index, element) => {
-    $(element).css('position', 'relative').append('<div class="skeleton-loader"></div>');
-  });
 }
 
-window.removeSkeleton = function() {
-  setTimeout(() => {
-    $('.skeleton-loader').css("opacity", 0)
-    setTimeout(() => {
-      $('.skeleton-loader').remove();
-    }, 400);
-  }, 300);
+function loadStylesheet(cssHref) {
+  const $link = $("<link>").attr({
+    rel: "stylesheet",
+    href: cssHref
+  });
+  $("head").append($link);
 }
 
 function backstopCSRF() {
@@ -55,28 +48,41 @@ function findObjectByUUID(obj, uuid) {
 
 const createdElements = {};
 
-function updateElement(data, element) {
-    let newData = data
+function pushContentsToElement(data, element) {
+  let newData = data
 
-    if (/^\d{13}$/.test(newData)) {
-      newData = new Date(newData).toLocaleDateString('en-GB')
-    }
-    const tagName = element.prop('tagName').toLowerCase();
-    switch (tagName) {
-        case 'input':
-        case 'select':
-        case 'textarea':
-            element.val(newData).trigger("input");
-            break;
-        case 'img':
-            element.attr('src', newData);
-            break;
-        case 'a':
-            element.attr('href', newData);
-            break;
-        default:
-            element.text(newData);
-    }
+  if (/^\d{13}$/.test(newData)) {
+    newData = new Date(newData).toLocaleDateString('en-GB')
+  }
+  const tagName = element.prop('tagName').toLowerCase();
+  switch (tagName) {
+      case 'input':
+      case 'select':
+      case 'textarea':
+          element.val(newData).trigger("input");
+          break;
+      case 'img':
+          element.attr('src', newData);
+          break;
+      case 'a':
+          element.attr('href', newData);
+          break;
+      default:
+          element.text(newData);
+  }
+}
+
+function updateElement(data, element) {
+  if (Array.isArray(data)) {
+    data.forEach(function(item) {
+      const clonedElement = element.clone();
+      pushContentsToElement(item, clonedElement);
+      element.after(clonedElement);
+    });
+    element.remove();
+  } else {
+    pushContentsToElement(data, element);
+  }
 }
 
 function populateDOMElements (tableName, rootProperty, childProperty) {
@@ -184,30 +190,32 @@ function getNestedValue(obj, keys) {
 }
 
 function createNestedProxies(obj, tableName, rootProperty, childProperty, callback) {
-    if (typeof obj !== 'object' || obj === null) {
-        return obj;
-    }
-    for (let key in obj) {
-        if (typeof obj[key] === 'object' && obj[key] !== null) {
-            obj[key] = createNestedProxies(obj[key], tableName, rootProperty, childProperty, callback);
-            obj[key] = new Proxy(obj[key], {
-                set(target, property, value) {
-                    target[property] = value;
-                    populateDOMElements(tableName, rootProperty, childProperty);
-                    if (callback && typeof callback === 'function') {
-                        debounce(callback);
-                    }
-                    return true;
-                },
-            });
-        }
-    }
-    return obj;
+  if (typeof obj !== 'object' || obj === null) {
+      return obj;
+  }
+
+  for (let key in obj) {
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+          obj[key] = createNestedProxies(obj[key], tableName, rootProperty, childProperty, callback);
+      }
+  }
+
+  return new Proxy(obj, {
+      set(target, property, value) {
+          target[property] = value;
+          populateDOMElements(tableName, rootProperty, childProperty);
+          if (callback && typeof callback === 'function') {
+              debounce(() => callback(property, value));
+          }
+          return true;
+      },
+  });
 }
 
 function bindData(data, tableName, rootProperty, childProperty, callback) {
     const handler = {
         set(target, property, value) {
+            console.log(target, property, value)
             target[property] = value;
             populateDOMElements(tableName, rootProperty, childProperty);
             if (callback && typeof callback === 'function') {
@@ -260,42 +268,4 @@ function getFormData(formId) {
   });
   
   return formData;
-}
-
-function generateGradientArray(startColor, endColor, length) {
-  const startRGB = hexToRgb(startColor);
-  const endRGB = hexToRgb(endColor);
-
-  const stepSize = {
-    r: (endRGB.r - startRGB.r) / (length - 1),
-    g: (endRGB.g - startRGB.g) / (length - 1),
-    b: (endRGB.b - startRGB.b) / (length - 1)
-  };
-
-  const gradientArray = [];
-  for (let i = 0; i < length; i++) {
-    const r = Math.round(startRGB.r + stepSize.r * i);
-    const g = Math.round(startRGB.g + stepSize.g * i);
-    const b = Math.round(startRGB.b + stepSize.b * i);
-    const hex = rgbToHex(r, g, b);
-    gradientArray.push(hex);
-  }
-  
-  return gradientArray;
-}
-
-function hexToRgb(hex) {
-  const bigint = parseInt(hex.slice(1), 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return { r, g, b };
-}
-
-function rgbToHex(r, g, b) {
-  const componentToHex = (c) => {
-    const hex = c.toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  };
-  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
