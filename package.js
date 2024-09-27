@@ -1,9 +1,7 @@
-$(document).ready(() => {
-  loadScript("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/skeleton.js");
-  loadScript("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/toast.js");
-  loadStylesheet("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/styles.css");
-  backstopCSRF();
-});
+loadScript("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/skeleton.js");
+loadScript("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/toast.js");
+loadStylesheet("https://cdn.jsdelivr.net/gh/jackhoweller/webflow-json-binder@latest/styles.css");
+backstopCSRF();
 
 function loadScript(scriptSrc) {
   const $script = $("<script>").attr("src", scriptSrc);
