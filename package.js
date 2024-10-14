@@ -19,8 +19,19 @@ function loadStylesheet(cssHref) {
 function backstopCSRF() {
   setTimeout(() => {
     const refreshCount = parseInt(sessionStorage.getItem('refreshCount')) || 0;
-    
-    if ($('.skeleton-loader').length > 0 && refreshCount < 2) {
+
+    function getCookie(name) {
+      let cookieArr = document.cookie.split(";");
+      for (let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+        if (name === cookiePair[0].trim()) {
+          return decodeURIComponent(cookiePair[1]);
+        }
+      }
+      return null;
+    }
+
+    if (getCookie("wf_loggedin") === "true" && !sessionStorage.getItem("wfuUser") && refreshCount < 2) {
       sessionStorage.setItem('refreshCount', (refreshCount + 1).toString());
       location.reload();
     } else {
