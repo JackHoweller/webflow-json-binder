@@ -31,7 +31,7 @@ function backstopCSRF() {
       return null;
     }
 
-    if (getCookie("wf_loggedin") === "true" && !sessionStorage.getItem("wfuUser") && refreshCount < 2) {
+    if (window.refreshOverride !== true && getCookie("wf_loggedin") === "true" && !sessionStorage.getItem("wfuUser") && refreshCount < 2) {
       sessionStorage.setItem('refreshCount', (refreshCount + 1).toString());
       location.reload();
     } else {
